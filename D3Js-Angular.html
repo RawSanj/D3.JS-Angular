@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AngularD3App">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=10">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AngularJs | D3.JS</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+  </head>
+  <body ng-cloak>
+    <!-- Show this error if JavaSCript, jQuery and AngularJS is disabled -->
+    <div id="hideIfJS" style="text-align:center;"><br><br><br><br><br><br>
+      <h4>
+        <strong>Error: </strong> Looks like either the JavaScript is disabled in your browser or you don't have access to external JavaScript Libraries.<br><br>
+      </h4>
+      <h5>
+        Please Contact your System Administrator to enable access to JavaScript External.
+      <h5>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    <!-- Hide all if JavaSCript, jQuery and AngularJS is disabled -->
+    <div id="hideIfNoJS" class="hidden">
+      <div ng-controller="D3ChartController" id="holder">
+        <div class="container-fluid" id="body">
+          <div class="row">
+            <div class="col-md-12"> <br>
+              <h2 class="text-center text-success" style="margin-bottom : 0px;">
+              Angular D3.Js Charts Demo
+              </h2><br><br><br>
+              <form class="form-horizontal">
+                  <div class="form-group">
+                      <div class="col-sm-offset-1 col-sm-10">
+                        <div>
+                          <div id="pieChart"></div>
+                          <div id="barChart"></div>  
+                          <div id="lineChart"></div>
+                        </div>
+                      </div>
+                  </div>
+              </form> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="text-center" id="footer">
+        <span class="glyphicon glyphicon-copyright-mark"></span> 2015 Bank of America Corporation. Author -  <em>Sanjay Rawat</em>
+      </footer>
+    </div>
+    <!-- JQuery js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- BootStrap Js -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- D3Js -->
+    <script src="http://d3js.org/d3.v2.js"></script>
+    <!-- JS Libraries for Angulat.UI and Angular-Main-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-animate.js"></script>    
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.0.js"></script>
+    <!-- App Js script -->
+    <script src="app.js"></script>
+  </body>
+</html>
