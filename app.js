@@ -7,14 +7,16 @@ app.controller('D3ChartController', ['$scope', function($scope){
     jQuery("#hideIfJS").addClass("hidden");
 
 	$scope.D3 = "Sanjay";
+
+	d3.select("#charts").append("div").attr("id", "pieChart");
+	d3.select("#charts").append("div").attr("id", "barChart");
+	d3.select("#charts").append("div").attr("id", "lineChart");
+
+
 	drawD3Chart();
 
 	d3.select(window).on('resize', resize); 
 	function resize (argument) {
-		var width = 400,
-			height = 400,
-			outerRadius = Math.min(width, height) / 2,
-			innerRadius = outerRadius * .999;
 		var screenWidth = parseInt(d3.select(window.screen.width)); 
 		var currentWidth = parseInt(d3.select(window.innerWidth));
 		var scaleSvg = currentWidth/screenWidth;
@@ -24,7 +26,13 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		//pieChartSvg.attr("width", width*scaleSvg);
 
 		var pieChart = d3.select("#pieChart svg g");
-		pieChart.attr("transform", "translate(" + outerRadius + "," + outerRadius + "), scale("+scaleSvg+")");
+		pieChart.attr("transform", "scale("+scaleSvg+")");
+
+		var barChart = d3.select("#barChart svg g");
+		barChart.attr("transform", "scale("+scaleSvg+")");
+
+		var lineChart = d3.select("#lineChart svg g");
+		lineChart.attr("transform", "scale("+scaleSvg+")");
 	}
 
 	function drawD3Chart (argument) {		    
@@ -74,6 +82,8 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			    
 			var vis = d3.select("#pieChart")
 			     .append("svg:svg")              //create the SVG element inside the <body>
+			     .append("g")					//add g to use Scale on window resize
+			     .attr("transform", "scale(1)")
 			     .data([dataset])                   //associate our data with the document
 			         .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
 			         .attr("height", height)
@@ -280,8 +290,11 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				    .attr("height", height + margin.top + margin.bottom)
 				    .attr("id","barChartPlot")
 				    ;
-			
-			var plot = svg
+			var groupBarChart = svg.append("g")
+					.attr("transform", "scale(1)")
+					;
+
+			var plot = groupBarChart
 				    .append("g")
 				    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 				    ;
@@ -331,7 +344,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			
 			// Add x labels to chart	
 			
-			var xLabels = svg
+			var xLabels = groupBarChart
 				    .append("g")
 				    .attr("transform", "translate(" + margin.left + "," + (margin.top + height)  + ")")
 				    ;
@@ -353,7 +366,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			 
 			// Title
 			
-			svg.append("text")
+			groupBarChart.append("text")
 				.attr("x", (width + margin.left + margin.right)/2)
 				.attr("y", 15)
 				.attr("class","title")				
@@ -535,6 +548,8 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			    ;
 			
 			var svg = d3.select("#lineChart").append("svg")
+				.append("g")					//add g to use Scale on window resize
+			    .attr("transform", "scale(1)")
 			    .datum(firstDatasetLineChart)
 			    .attr("width", width + margin.left + margin.right)
 			    .attr("height", height + margin.top + margin.bottom)
@@ -664,5 +679,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		}
 
 	};
+
+
 
 }]);
