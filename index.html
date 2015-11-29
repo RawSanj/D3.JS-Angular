@@ -26,24 +26,26 @@
         <div class="container-fluid" id="body" ng-init="drawD3Chart()">
           <div class="row">
             <h2 class="text-center text-success" style="margin-bottom : 0px;">
-              Angular D3.Js Charts Demo
+              Angular D3.Js Charts Demo <br> <br>
             </h2>
             <div class="col-md-offset-1 col-md-10"> <br>
-              <h2>Sales</h2>
-              <!-- Todos input -->
-              <form role="form" ng-submit="addSalesMan()">
-                <div class="row">
-                  <div class="input-group">
-                    <input type="text" ng-model="salesMan.name" placeholder="Add a SalesMan?" class="form-control">
-                    <span class="input-group-btn">
-                      <input type="submit" class="btn btn-primary" value="Add">
-                    </span>
-                  </div>
-                </div>
-              </form> <br>
-              <!-- Todos list -->
+              <!-- <h2 class="text-success">Sales</h2> -->
               <table class="table table-hover table-condensed table-striped">
                 <thead>
+                  <tr>
+                    <th colspan="4">
+                      <form role="form" ng-submit="addSalesMan()">
+                        <div class="row">
+                          <div class="input-group">
+                            <input type="text" ng-model="salesMan.name" placeholder="Add a SalesMan?" class="form-control">
+                            <span class="input-group-btn">
+                              <input type="submit" class="btn btn-primary btn-block" value="Add">
+                            </span>
+                          </div>
+                        </div>
+                      </form>                      
+                    </th>
+                  </tr>
                   <tr>
                     <th>Name</th>  <th>Sales</th> <th>Update</th> <th>Delete</th>
                   </tr>
@@ -62,17 +64,21 @@
                         <table class="table table-hover table-condensed table-striped">
                         <thead>
                           <tr>
-                            <th> Brand </th> <th> Items Sold </th>
+                            <th style="width:30px!important"> Brand </th> <th style="width:30px!important"> </th> <th> Items Sold </th>
                           </tr>
                         </thead>
                           <tbody>
                             <tr ng-repeat="item in salesMan.saleByBrand">
-                              <td>
-                                <label class="text-left">{{item.brand}} :</label>
+                              <td style="width:30px!important">
+                                <label class="text-left"> {{item.brand}} </label>
                               </td>
+                              <td style="width:30px!important"> : </td>
                               <td>
                                 <strong ng-hide="showEdit"> {{item.quantity}} </strong>
-                                <input type="text" ng-model="sales.updated[$index]" placeholder="{{item.quantity}}" class="" ng-show="showEdit">
+                                <div class="form-group">
+                                  <input type="text" ng-model="sales.updated[$index]" placeholder="{{item.quantity}}" class="form-control" ng-show="showEdit">
+                                </div>
+                                
                               </td>
                             </tr>                             
                           </tbody>
@@ -87,7 +93,7 @@
                       <!-- index : {{$index}} -->
                     </td>  
                     <td>
-                      <button class="btn btn-danger btn-block" ng-click="removeSalesMan($index)" aria-label="Remove">Delete</button>
+                      <button class="btn btn-danger btn-block" ng-click="removeSalesMan($index); drawD3Chart()" aria-label="Remove">Delete</button>
                     </td>                                       
                   </tr>
                 </tbody>
