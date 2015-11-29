@@ -34,13 +34,16 @@
                 <thead>
                   <tr>
                     <th colspan="4">
-                      <form role="form" ng-submit="addSalesMan()">
+                      <form role="form" ng-submit="addSalesMan()" class="form-horizontal">
                         <div class="row">
-                          <div class="input-group">
-                            <input type="text" ng-model="salesMan.name" placeholder="Add a SalesMan?" class="form-control">
-                            <span class="input-group-btn">
+                          <div class="form-group">
+                            <label for="salesMan" class="col-sm-2 control-label">Sales Person : </label>
+                            <div class="col-sm-7">
+                              <input type="text" ng-model="salesMan.name" placeholder="Add a SalesMan?" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
                               <input type="submit" class="btn btn-primary btn-block" value="Add">
-                            </span>
+                            </div>
                           </div>
                         </div>
                       </form>                      

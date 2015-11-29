@@ -78,12 +78,12 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		$scope.salesMan = '';
 		
 
-		console.log($scope.salesPersons);
+		//console.log($scope.salesPersons);
     };
 
     $scope.updateSalesMan = function (index, sales) {
-    	console.log("salesPersonsbeforeUpdate");
-		console.log($scope.salesPersons);
+    	//console.log("salesPersonsbeforeUpdate");
+		//console.log($scope.salesPersons);
 		//console.log("Index : " + index);
 		var sales = sales.updated;
 		//console.log(sales);
@@ -91,8 +91,8 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		var editedPersonByBrand = $scope.salesPersons[index].saleByBrand;
 
 		angular.forEach(sales, function(value, key){
-			console.log("sales : " + key );
-			console.log(sales[key]);
+			//console.log("sales : " + key );
+			//console.log(sales[key]);
 
 			editedPersonByBrand[key].quantity = parseInt(sales[key]);
 		});
@@ -106,8 +106,8 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		$scope.salesPersons[index].saleByBrand = editedPersonByBrand;
 		//console.log($scope.salesPersons[index].saleByBrand);
 
-		console.log("salesPersonsAfterUpdate");
-		console.log($scope.salesPersons);
+		// console.log("salesPersonsAfterUpdate");
+		// console.log($scope.salesPersons);
     };
 
 
@@ -138,7 +138,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 	}
 
 	$scope.drawD3Chart = function(argument) {	
-		console.log($scope.salesPersons);
+		//console.log($scope.salesPersons);
 	    jQuery("#pieChart").remove();
 	    jQuery("#barChart").remove();
 	    jQuery("#lineChart").remove();
@@ -323,7 +323,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				vis.append("svg:text")
 			     	.attr("dy", ".35em")
 			      .attr("text-anchor", "middle")
-			      .text("Servers On-boarded")
+			      .text("Mobiles Sold")
 			      .attr("class","title")
 			      ;		    
 
@@ -521,7 +521,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				.attr("y", 15)
 				.attr("class","title")				
 				.attr("text-anchor", "middle")
-				.text("Overall Servers On-boarded 2015")
+				.text("Overall Mobiles Sold 2015")
 				;
 		}
 
@@ -602,7 +602,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 					.attr("y", 15)
 					.attr("class","title")				
 					.attr("text-anchor", "middle")
-					.text(group + "'s Servers On-boarded 2015")
+					.text(group + "'s Mobiles Sale in 2015")
 				;
 		}
 
@@ -646,6 +646,12 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		function dsLineChart() {
 
 			var firstDatasetLineChart = datasetLineChartChosen(group);    
+
+			var totalData = 0;
+
+			for (var i = firstDatasetLineChart.length - 1; i >= 0; i--) {
+				totalData = totalData + firstDatasetLineChart[i].measure;
+			};
 			
 			var basics = dsLineChartBasics();
 			
@@ -687,8 +693,11 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				/* descriptive titles as part of plot -- start */
 			var dsLength=firstDatasetLineChart.length;
 
+			//console.log(firstDatasetLineChart);
+
 			plot.append("text")
-				.text(firstDatasetLineChart[dsLength-1].measure)
+				.text(totalData)
+				//.text("10000")
 				.attr("id","lineChartTitle2")
 				.attr("x",width/2)
 				.attr("y",height/2)	
@@ -718,7 +727,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			    ;
 
 			svg.append("text")
-				.text("Index of 2015")
+				.text("Sale - 2015")
 				.attr("id","lineChartTitle1")	
 				.attr("x",margin.left + ((width + margin.right)/2))
 				.attr("y", 10)
@@ -735,6 +744,12 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		function updateLineChart(group, colorChosen) {
 
 			var currentDatasetLineChart = datasetLineChartChosen(group);   
+			//console.log(currentDatasetLineChart);
+			var totalData = 0;
+
+			for (var i = currentDatasetLineChart.length - 1; i >= 0; i--) {
+				totalData = totalData + currentDatasetLineChart[i].measure;
+			};
 
 			var basics = dsLineChartBasics();
 			
@@ -766,7 +781,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			var dsLength=currentDatasetLineChart.length;
 			
 			plot.select("text")
-				.text(currentDatasetLineChart[dsLength-1].measure)
+				.text(totalData)
 				;
 			/* descriptive titles -- end */
 			   
