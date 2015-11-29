@@ -12,6 +12,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 
     $scope.showEdit = false;
 
+    //Object to hold Sales Data
 	$scope.salesPersons = [ 
 		{name : 'Sheldon', saleByBrand : [
 				{brand : "LG", quantity : 121},
@@ -19,13 +20,13 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				{brand : "Samsung", quantity : 140},
 				{brand : "HTC", quantity : 67},
 				{brand : "Sony", quantity : 45},
-				{brand : "Microsoft", quantity : 15}
+				{brand : "Microsoft", quantity : 205}
 			] 
 		}, 
 		{name : 'Leonard', saleByBrand : [
-				{brand : "LG", quantity : 141},
+				{brand : "LG", quantity : 41},
 				{brand : "Apple", quantity : 14},
-				{brand : "Samsung", quantity : 180},
+				{brand : "Samsung", quantity : 80},
 				{brand : "HTC", quantity : 37},
 				{brand : "Sony", quantity : 55},
 				{brand : "Microsoft", quantity : 65}
@@ -41,12 +42,21 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			] 
 		}, 
 		{name : 'Howard', saleByBrand : [
-				{brand : "LG", quantity : 50},
+				{brand : "LG", quantity : 250},
 				{brand : "Apple", quantity : 94},
-				{brand : "Samsung", quantity : 40},
+				{brand : "Samsung", quantity : 140},
 				{brand : "HTC", quantity : 57},
 				{brand : "Sony", quantity : 75},
 				{brand : "Microsoft", quantity : 85}
+			] 
+		}, 
+		{name : 'Penny', saleByBrand : [
+				{brand : "LG", quantity : 50},
+				{brand : "Apple", quantity : 14},
+				{brand : "Samsung", quantity : 40},
+				{brand : "HTC", quantity : 27},
+				{brand : "Sony", quantity : 85},
+				{brand : "Microsoft", quantity : 25}
 			] 
 		} ];
     
@@ -55,6 +65,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
   		//console.log($scope.salesPersons);
        	
        	var addToArray=true;
+       	//initialize saleByBrand array with Brands and set all quantity to 0.
        	var saleByBrandEmptyArr = [
 					       			{brand : "LG", quantity : 0},
 									{brand : "Apple", quantity : 0},
@@ -64,9 +75,9 @@ app.controller('D3ChartController', ['$scope', function($scope){
 									{brand : "Microsoft", quantity : 0}
 								];
 
-
        	var salesMan = {name : $scope.salesMan.name, saleByBrand : saleByBrandEmptyArr };
 
+       	//Add new Sales Person if it doesnt alredy exists
 		for(var i=0;i<$scope.salesPersons.length;i++){
 		    if($scope.salesPersons[i].name===$scope.salesMan.name){
 		        addToArray=false;
@@ -76,38 +87,28 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		    $scope.salesPersons.push(salesMan);
 		}
 		$scope.salesMan = '';
-		
+		$scope.sales={};
 
-		console.log($scope.salesPersons);
+		//console.log($scope.salesPersons);
     };
 
+    //Update salesPerson obj by passing the index of salesPerson{}[] and the new data in sales obj
     $scope.updateSalesMan = function (index, sales) {
-    	console.log("salesPersonsbeforeUpdate");
-		console.log($scope.salesPersons);
-		//console.log("Index : " + index);
-		var sales = sales.updated;
-		//console.log(sales);
-		
+    	
+    	//array of new sales data
+		var sales = sales.updated;		
+		//array of targeted old data
 		var editedPersonByBrand = $scope.salesPersons[index].saleByBrand;
 
+		//set data from new sales array into targeted old data
 		angular.forEach(sales, function(value, key){
-			console.log("sales : " + key );
-			console.log(sales[key]);
 
 			editedPersonByBrand[key].quantity = parseInt(sales[key]);
+
 		});
-   		
-   		
-
-  //  		console.log("editedPersonByBrand");
-		// console.log(editedPersonByBrand);
-
-		// console.log("editedPersonObj");
+   		//set updated targeted data into salesPersons obj
 		$scope.salesPersons[index].saleByBrand = editedPersonByBrand;
-		//console.log($scope.salesPersons[index].saleByBrand);
-
-		console.log("salesPersonsAfterUpdate");
-		console.log($scope.salesPersons);
+		// console.log($scope.salesPersons); //for debugging
     };
 
 
@@ -138,7 +139,8 @@ app.controller('D3ChartController', ['$scope', function($scope){
 	}
 
 	$scope.drawD3Chart = function(argument) {	
-		console.log($scope.salesPersons);
+		
+		//Remove the plotted chart from DOM to generate new chart on Update.
 	    jQuery("#pieChart").remove();
 	    jQuery("#barChart").remove();
 	    jQuery("#lineChart").remove();
@@ -323,7 +325,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				vis.append("svg:text")
 			     	.attr("dy", ".35em")
 			      .attr("text-anchor", "middle")
-			      .text("Servers On-boarded")
+			      .text("Mobiles Sold")
 			      .attr("class","title")
 			      ;		    
 
@@ -521,7 +523,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				.attr("y", 15)
 				.attr("class","title")				
 				.attr("text-anchor", "middle")
-				.text("Overall Servers On-boarded 2015")
+				.text("Overall Mobiles Sold 2015")
 				;
 		}
 
@@ -602,7 +604,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 					.attr("y", 15)
 					.attr("class","title")				
 					.attr("text-anchor", "middle")
-					.text(group + "'s Servers On-boarded 2015")
+					.text(group + "'s Mobiles Sale in 2015")
 				;
 		}
 
@@ -646,6 +648,12 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		function dsLineChart() {
 
 			var firstDatasetLineChart = datasetLineChartChosen(group);    
+
+			var totalData = 0;
+
+			for (var i = firstDatasetLineChart.length - 1; i >= 0; i--) {
+				totalData = totalData + firstDatasetLineChart[i].measure;
+			};
 			
 			var basics = dsLineChartBasics();
 			
@@ -687,8 +695,11 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				/* descriptive titles as part of plot -- start */
 			var dsLength=firstDatasetLineChart.length;
 
+			//console.log(firstDatasetLineChart);
+
 			plot.append("text")
-				.text(firstDatasetLineChart[dsLength-1].measure)
+				.text(totalData)
+				//.text("10000")
 				.attr("id","lineChartTitle2")
 				.attr("x",width/2)
 				.attr("y",height/2)	
@@ -718,7 +729,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			    ;
 
 			svg.append("text")
-				.text("Index of 2015")
+				.text("Mobiles Sold in - 2015")
 				.attr("id","lineChartTitle1")	
 				.attr("x",margin.left + ((width + margin.right)/2))
 				.attr("y", 10)
@@ -735,6 +746,12 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		function updateLineChart(group, colorChosen) {
 
 			var currentDatasetLineChart = datasetLineChartChosen(group);   
+			//console.log(currentDatasetLineChart);
+			var totalData = 0;
+
+			for (var i = currentDatasetLineChart.length - 1; i >= 0; i--) {
+				totalData = totalData + currentDatasetLineChart[i].measure;
+			};
 
 			var basics = dsLineChartBasics();
 			
@@ -766,7 +783,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			var dsLength=currentDatasetLineChart.length;
 			
 			plot.select("text")
-				.text(currentDatasetLineChart[dsLength-1].measure)
+				.text(totalData)
 				;
 			/* descriptive titles -- end */
 			   
