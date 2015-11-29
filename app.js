@@ -6,14 +6,116 @@ app.controller('D3ChartController', ['$scope', function($scope){
     jQuery("#hideIfNoJS").removeClass("hidden");
     jQuery("#hideIfJS").addClass("hidden");
 
-	$scope.D3 = "Sanjay";
+    $scope.isCollapsed = true;
 
-	d3.select("#charts").append("div").attr("id", "pieChart");
-	d3.select("#charts").append("div").attr("id", "barChart");
-	d3.select("#charts").append("div").attr("id", "lineChart");
+    $scope.sales = {};
+
+    $scope.showEdit = false;
+
+	$scope.salesPersons = [ 
+		{name : 'Sheldon', saleByBrand : [
+				{brand : "LG", quantity : 121},
+				{brand : "Apple", quantity : 24},
+				{brand : "Samsung", quantity : 140},
+				{brand : "HTC", quantity : 67},
+				{brand : "Sony", quantity : 45},
+				{brand : "Microsoft", quantity : 15}
+			] 
+		}, 
+		{name : 'Leonard', saleByBrand : [
+				{brand : "LG", quantity : 141},
+				{brand : "Apple", quantity : 14},
+				{brand : "Samsung", quantity : 180},
+				{brand : "HTC", quantity : 37},
+				{brand : "Sony", quantity : 55},
+				{brand : "Microsoft", quantity : 65}
+			] 
+		}, 
+		{name : 'Rajesh', saleByBrand : [
+				{brand : "LG", quantity : 61},
+				{brand : "Apple", quantity : 84},
+				{brand : "Samsung", quantity : 160},
+				{brand : "HTC", quantity : 27},
+				{brand : "Sony", quantity : 45},
+				{brand : "Microsoft", quantity : 45}
+			] 
+		}, 
+		{name : 'Howard', saleByBrand : [
+				{brand : "LG", quantity : 50},
+				{brand : "Apple", quantity : 94},
+				{brand : "Samsung", quantity : 40},
+				{brand : "HTC", quantity : 57},
+				{brand : "Sony", quantity : 75},
+				{brand : "Microsoft", quantity : 85}
+			] 
+		} ];
+    
+    $scope.addSalesMan = function () {
+  		
+  		//console.log($scope.salesPersons);
+       	
+       	var addToArray=true;
+       	var saleByBrandEmptyArr = [
+					       			{brand : "LG", quantity : 0},
+									{brand : "Apple", quantity : 0},
+									{brand : "Samsung", quantity : 0},
+									{brand : "HTC", quantity : 0},
+									{brand : "Sony", quantity : 0},
+									{brand : "Microsoft", quantity : 0}
+								];
 
 
-	drawD3Chart();
+       	var salesMan = {name : $scope.salesMan.name, saleByBrand : saleByBrandEmptyArr };
+
+		for(var i=0;i<$scope.salesPersons.length;i++){
+		    if($scope.salesPersons[i].name===$scope.salesMan.name){
+		        addToArray=false;
+		    }
+		}
+		if(addToArray){
+		    $scope.salesPersons.push(salesMan);
+		}
+		$scope.salesMan = '';
+		
+
+		console.log($scope.salesPersons);
+    };
+
+    $scope.updateSalesMan = function (index, sales) {
+    	console.log("salesPersonsbeforeUpdate");
+		console.log($scope.salesPersons);
+		//console.log("Index : " + index);
+		var sales = sales.updated;
+		//console.log(sales);
+		
+		var editedPersonByBrand = $scope.salesPersons[index].saleByBrand;
+
+		angular.forEach(sales, function(value, key){
+			console.log("sales : " + key );
+			console.log(sales[key]);
+
+			editedPersonByBrand[key].quantity = parseInt(sales[key]);
+		});
+   		
+   		
+
+  //  		console.log("editedPersonByBrand");
+		// console.log(editedPersonByBrand);
+
+		// console.log("editedPersonObj");
+		$scope.salesPersons[index].saleByBrand = editedPersonByBrand;
+		//console.log($scope.salesPersons[index].saleByBrand);
+
+		console.log("salesPersonsAfterUpdate");
+		console.log($scope.salesPersons);
+    };
+
+
+    $scope.removeSalesMan = function (index) {
+      $scope.salesPersons.splice(index, 1);
+    };
+
+	//$scope.drawD3Chart();
 
 	d3.select(window).on('resize', resize); 
 	function resize (argument) {
@@ -35,7 +137,16 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		lineChart.attr("transform", "scale("+scaleSvg+")");
 	}
 
-	function drawD3Chart (argument) {		    
+	$scope.drawD3Chart = function(argument) {	
+		console.log($scope.salesPersons);
+	    jQuery("#pieChart").remove();
+	    jQuery("#barChart").remove();
+	    jQuery("#lineChart").remove();
+
+		d3.select("#charts").append("div").attr("id", "pieChart");
+		d3.select("#charts").append("div").attr("id", "barChart");
+		d3.select("#charts").append("div").attr("id", "lineChart");
+
 		/*
 		################ FORMATS ##################
 		-------------------------------------------
@@ -52,6 +163,77 @@ app.controller('D3ChartController', ['$scope', function($scope){
 				fmon = d3.time.format("%b")
 				;
 
+		//Formaing data for PieChart
+		var datasetPieChart = [];
+		angular.forEach($scope.salesPersons, function(value, key){
+			var totalSales = 0;
+			
+			angular.forEach(value.saleByBrand, function(value, key){
+				totalSales = totalSales + value.quantity;
+			});
+
+			datasetPieChart.push( {category: value.name, measure: totalSales} );
+		});
+
+		//Formaing data for BarChart and LineChart
+		var datasetBarLineChart = [];
+		var brandNames = [];
+
+		angular.forEach($scope.salesPersons, function(value, key){
+			var groupName = value.name;
+			
+			angular.forEach(value.saleByBrand, function(value, key){
+				datasetBarLineChart.push( { group: groupName, category: value.brand, measure: value.quantity } );
+				brandNames.push(value.brand);
+			});
+
+		});
+		// console.log("datasetBarLineChart before");
+		// console.log(datasetBarLineChart);
+
+		brandNames = d3.set(brandNames).values();
+
+		var datasetBarLineChartForAll = [];
+
+		for (var i = 0; i < brandNames.length; i++) {
+			var measureVal = 0;
+			for (var j =  0; j < datasetBarLineChart.length; j++) {
+				
+				if (brandNames[i] === datasetBarLineChart[j].category) {
+					measureVal = measureVal + datasetBarLineChart[j].measure;
+				};
+			};
+
+			var overallSale = { group: "All", category: brandNames[i], measure : measureVal };
+			datasetBarLineChartForAll.push(overallSale);
+		};
+		// console.log("datasetBarLineChartForAll");
+		// console.log(datasetBarLineChartForAll);
+
+		datasetBarLineChart = datasetBarLineChart.concat(datasetBarLineChartForAll);
+//Same For Loop logic, but not wokring :
+/*		angular.forEach(brandNames, function(value, key){
+
+			var measureVal = 0;
+			angular.forEach(datasetBarLineChart, function(value, key){
+				if (value.category === brandNames[key]) {
+					console.log("value.category : "+ value.category + "brandNames[key]"+brandNames[key]);
+					measureVal = measureVal + value.measure;
+				};
+			});
+			console.log(brandNames[key] + " - measureVal : "+ measureVal);
+			var overallSale = { group: "All", category: brandNames[key], measure : measureVal };
+			
+			datasetBarLineChart.push(overallSale);
+		});
+*/
+		// console.log("datasetBarLineChart after");
+		// console.log(datasetBarLineChart);
+		
+
+		
+
+
 		/*
 		############# PIE CHART ###################
 		-------------------------------------------
@@ -59,15 +241,10 @@ app.controller('D3ChartController', ['$scope', function($scope){
 
 
 
-		function dsPieChart(){
+		function dsPieChart(data){
 
-			var dataset = [
-					{category: "Linux", measure: 194},
-			        {category: "Solaris", measure: 76},
-			        {category: "AIX", measure: 30},
-			        {category: "Windows", measure: 118}
-			      ]
-			      ;
+			var dataset = data;
+
 			var total = d3.sum(dataset, function(d) {return d.measure; });
 
 			var    width = 400,
@@ -172,7 +349,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			
 			function up(d, i) {
 			
-						/* update bar chart when user selects piece of the pie chart */
+						/* update bar chart when salesMan selects piece of the pie chart */
 						//updateBarChart(dataset[i].category);
 						updateBarChart(d.data.category, color(i));
 						updateLineChart(d.data.category, color(i));
@@ -180,7 +357,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 			}
 		}
 
-		dsPieChart();
+		dsPieChart(datasetPieChart);
 
 		/*
 		############# BAR CHART ###################
@@ -189,34 +366,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 
 
 
-		var datasetBarChart = [
-		{ group: "All", category: "Jan-15", measure: 45 }, 
-		{ group: "All", category: "Feb-15", measure: 62 }, 
-		{ group: "All", category: "Mar-15", measure: 134 }, 
-		{ group: "All", category: "April-15", measure: 58 }, 
-		{ group: "All", category: "May-15", measure: 103 }, 
-		{ group: "Linux", category: "Jan-15", measure: 20 }, 
-		{ group: "Linux", category: "Feb-15", measure: 40 }, 
-		{ group: "Linux", category: "Mar-15", measure: 60 }, 
-		{ group: "Linux", category: "April-15", measure: 10 }, 
-		{ group: "Linux", category: "May-15", measure: 64 }, 
-		{ group: "Solaris", category: "Jan-15", measure: 10 }, 
-		{ group: "Solaris", category: "Feb-15", measure: 16 }, 
-		{ group: "Solaris", category: "Mar-15", measure: 30 }, 
-		{ group: "Solaris", category: "April-15", measure: 9 }, 
-		{ group: "Solaris", category: "May-15", measure: 21 }, 
-		{ group: "Windows", category: "Jan-15", measure: 10 }, 
-		{ group: "Windows", category: "Feb-15", measure: 24 }, 
-		{ group: "Windows", category: "Mar-15", measure: 34 }, 
-		{ group: "Windows", category: "April-15", measure: 40 }, 
-		{ group: "Windows", category: "May-15", measure: 10 }, 
-		{ group: "AIX", category: "Jan-15", measure: 5 }, 
-		{ group: "AIX", category: "Feb-15", measure: 2 }, 
-		{ group: "AIX", category: "Mar-15", measure: 10 }, 
-		{ group: "AIX", category: "April-15", measure: 5 }, 
-		{ group: "AIX", category: "May-15", measure: 8 }
-		]
-		;
+		var datasetBarChart = datasetBarLineChart;
 
 		// set initial group value
 		var group = "All";
@@ -462,34 +612,7 @@ app.controller('D3ChartController', ['$scope', function($scope){
 		-------------------------------------------
 		*/
 
-		var datasetLineChart = [
-		{ group: "All", category: "Jan-15", measure: 638 }, 
-		{ group: "All", category: "Feb-15", measure: 782 }, 
-		{ group: "All", category: "Mar-15", measure: 606 }, 
-		{ group: "All", category: "April-15", measure: 304 }, 
-		{ group: "All", category: "May-15", measure: 560 }, 
-		{ group: "Linux", category: "Jan-15", measure: 194 }, 
-		{ group: "Linux", category: "Feb-15", measure: 259 }, 
-		{ group: "Linux", category: "Mar-15", measure: 97 }, 
-		{ group: "Linux", category: "April-15", measure: 64 }, 
-		{ group: "Linux", category: "May-15", measure: 194 }, 
-		{ group: "Solaris", category: "Jan-15", measure: 229 }, 
-		{ group: "Solaris", category: "Feb-15", measure: 76 }, 
-		{ group: "Solaris", category: "Mar-15", measure: 235 }, 
-		{ group: "Solaris", category: "April-15", measure: 19 }, 
-		{ group: "Solaris", category: "May-15", measure: 76 }, 
-		{ group: "Windows", category: "Jan-15", measure: 10 }, 
-		{ group: "Windows", category: "Feb-15", measure: 24 }, 
-		{ group: "Windows", category: "Mar-15", measure: 152 }, 
-		{ group: "Windows", category: "April-15", measure: 41 }, 
-		{ group: "Windows", category: "May-15", measure: 118 }, 
-		{ group: "AIX", category: "Jan-15", measure: 74 }, 
-		{ group: "AIX", category: "Feb-15", measure: 25 }, 
-		{ group: "AIX", category: "Mar-15", measure: 16 }, 
-		{ group: "AIX", category: "April-15", measure: 85 }, 
-		{ group: "AIX", category: "May-15", measure: 30 }
-		]
-		;
+		var datasetLineChart = datasetBarLineChart;
 
 		// set initial category value
 		var group = "All";
