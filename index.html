@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>AngularJs | D3.JS</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-    <link href="main.css" rel="stylesheet">
+    <link href="css/d3chart.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
   </head>
   <body ng-cloak>
     <!-- Show this error if JavaSCript, jQuery and AngularJS is disabled -->
@@ -22,41 +23,106 @@
     <!-- Hide all if JavaSCript, jQuery and AngularJS is disabled -->
     <div id="hideIfNoJS" class="hidden">
       <div ng-controller="D3ChartController" id="holder">
-        <div class="container-fluid" id="body">
+        <div class="container-fluid" id="body" ng-init="drawD3Chart()">
           <div class="row">
-            <div class="col-md-12"> <br>
-              <h2 class="text-center text-success" style="margin-bottom : 0px;">
+            <h2 class="text-center text-success" style="margin-bottom : 0px;">
               Angular D3.Js Charts Demo
-              </h2><br><br><br>
+            </h2>
+            <div class="col-md-offset-1 col-md-10"> <br>
+              <h2>Sales</h2>
+              <!-- Todos input -->
+              <form role="form" ng-submit="addSalesMan()">
+                <div class="row">
+                  <div class="input-group">
+                    <input type="text" ng-model="salesMan.name" placeholder="Add a SalesMan?" class="form-control">
+                    <span class="input-group-btn">
+                      <input type="submit" class="btn btn-primary" value="Add">
+                    </span>
+                  </div>
+                </div>
+              </form> <br>
+              <!-- Todos list -->
+              <table class="table table-hover table-condensed table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>  <th>Sales</th> <th>Update</th> <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="salesMan in salesPersons">
+                    <td>
+                      <input type="text" ng-model="salesMan.name" class="form-control">
+                    </td>
+                    <td>
+                      <div class="panel panel-warning">
+                        <div class="panel-heading" ng-click="isCollapsed = !isCollapsed" style="cursor: pointer;">
+                          {{salesMan.name}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !isCollapsed, 'glyphicon-chevron-right': isCollapsed}"></i>
+                        </div>
+                        <div class="panel-body reduce-padding" uib-collapse="isCollapsed">
+                        <table class="table table-hover table-condensed table-striped">
+                        <thead>
+                          <tr>
+                            <th> Brand </th> <th> Items Sold </th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <tr ng-repeat="item in salesMan.saleByBrand">
+                              <td>
+                                <label class="text-left">{{item.brand}} :</label>
+                              </td>
+                              <td>
+                                <strong ng-hide="showEdit"> {{item.quantity}} </strong>
+                                <input type="text" ng-model="sales.updated[$index]" placeholder="{{item.quantity}}" class="" ng-show="showEdit">
+                              </td>
+                            </tr>                             
+                          </tbody>
+                        </table>
+                        <button type="button" class="btn btn-info btn-block" ng-click="showEdit=true" ng-hide="showEdit">Edit</button>
+                        <button type="button" class="btn btn-success btn-block" ng-click="updateSalesMan($index, sales);showEdit=false;sales={}" ng-show="showEdit">Save</button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-warning btn-block" ng-click="drawD3Chart()">Update</button> 
+                      <!-- index : {{$index}} -->
+                    </td>  
+                    <td>
+                      <button class="btn btn-danger btn-block" ng-click="removeSalesMan($index)" aria-label="Remove">Delete</button>
+                    </td>                                       
+                  </tr>
+                </tbody>
+              </table>  
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12"><br><br>
               <form class="form-horizontal">
                   <div class="form-group">
                       <div class="col-sm-offset-1 col-sm-10">
                         <div id="charts">
-                          <!-- <div id="pieChart"></div>
-                          <div id="barChart"></div>  
-                          <div id="lineChart"></div> -->
                         </div>
                       </div>
                   </div>
               </form> 
             </div>
-          </div>
+          </div> 
         </div>
       </div>
-      <footer class="text-center" id="footer">
+      <!-- <footer class="text-center" id="footer">
         <span class="glyphicon glyphicon-copyright-mark"></span> Sanjay Rawat. 2015
-      </footer>
+      </footer> -->
     </div>
+    <!-- Dev Dependencies -->
     <!-- JQuery js -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="src/jquery-2.1.4.min.js"></script>
     <!-- BootStrap Js -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="src/bootstrap/js/bootstrap.min.js"></script>
     <!-- D3Js -->
-    <script src="http://d3js.org/d3.v2.js"></script>
+    <script src="src/d3.min.js"></script>
     <!-- JS Libraries for Angulat.UI and Angular-Main-->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular-animate.js"></script>    
-    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.0.js"></script>
+    <script src="src/angular.min.js"></script>
+    <script src="src/angular-animate.js"></script>    
+    <script src="src/ui-bootstrap-tpls-0.14.3.min.js"></script>
     <!-- App Js script -->
     <script src="app.js"></script>
   </body>
