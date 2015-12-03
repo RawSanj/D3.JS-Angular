@@ -6,6 +6,9 @@ body{
 .hidden{
 	display: none;
 }
+input{
+    text-align:center;
+}
 input[placeholder]{
     text-align:center;
 }
@@ -87,4 +90,16 @@ tbody tr td:nth-child(4) {
 
 .align-center{
 	text-align: center!important;
+}
+
+#charts{
+	position: relative;
+}
+
+#pieChart svg{
+	overflow: overlay;
+}
+
+#lineChart svg{
+	overflow: overlay;
 }
