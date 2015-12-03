@@ -116,27 +116,25 @@ app.controller('D3ChartController', ['$scope', function($scope){
       $scope.salesPersons.splice(index, 1);
     };
 
-	//$scope.drawD3Chart();
+	// d3.select(window).on('resize', resize); 
+	// function resize (argument) {
+	// 	var screenWidth = parseInt(d3.select(window.screen.width)); 
+	// 	var currentWidth = parseInt(d3.select(window.innerWidth));
+	// 	var scaleSvg = currentWidth/screenWidth;
+	// 	//var height = parseInt(d3.select(window.innerHeight));
+	// 	//console.log("Windows Size is changed by : " + screenWidth + " * " + currentWidth +" * " + scaleSvg);
+	// 	var pieChartSvg = d3.select("#pieChart svg");
+	// 	//pieChartSvg.attr("width", width*scaleSvg);
 
-	d3.select(window).on('resize', resize); 
-	function resize (argument) {
-		var screenWidth = parseInt(d3.select(window.screen.width)); 
-		var currentWidth = parseInt(d3.select(window.innerWidth));
-		var scaleSvg = currentWidth/screenWidth;
-		//var height = parseInt(d3.select(window.innerHeight));
-		//console.log("Windows Size is changed by : " + screenWidth + " * " + currentWidth +" * " + scaleSvg);
-		var pieChartSvg = d3.select("#pieChart svg");
-		//pieChartSvg.attr("width", width*scaleSvg);
+	// 	var pieChart = d3.select("#pieChart svg g");
+	// 	pieChart.attr("transform", "scale("+scaleSvg+")");
 
-		var pieChart = d3.select("#pieChart svg g");
-		pieChart.attr("transform", "scale("+scaleSvg+")");
+	// 	var barChart = d3.select("#barChart svg g");
+	// 	barChart.attr("transform", "scale("+scaleSvg+")");
 
-		var barChart = d3.select("#barChart svg g");
-		barChart.attr("transform", "scale("+scaleSvg+")");
-
-		var lineChart = d3.select("#lineChart svg g");
-		lineChart.attr("transform", "scale("+scaleSvg+")");
-	}
+	// 	var lineChart = d3.select("#lineChart svg g");
+	// 	lineChart.attr("transform", "scale("+scaleSvg+")");
+	// }
 
 	$scope.drawD3Chart = function(argument) {	
 		
